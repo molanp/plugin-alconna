@@ -1,5 +1,5 @@
 from nonebot.adapters.minecraft.message import MessageSegment
-from nonebot.adapters.minecraft.model import TextColor
+from nonebot.adapters.minecraft.models import Color
 
 from nonebot_plugin_alconna.uniseg.builder import MessageBuilder, build
 from nonebot_plugin_alconna.uniseg.constraint import SupportAdapter
@@ -13,7 +13,7 @@ class MinecraftMessageBuilder(MessageBuilder):
 
     def get_styles(self, data: dict):
         styles = []
-        if "color" in data and data["color"] and data["color"] != TextColor.WHITE:
+        if "color" in data and data["color"] and data["color"] != Color.white:
             styles.append(data["color"])
         if data.get("bold"):
             styles.append("bold")

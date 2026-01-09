@@ -130,11 +130,11 @@ def export(
 ) -> Callable[[Any, TS, Union[Bot, None]], Awaitable[Union[TMS, list[TMS]]]]: ...
 
 
-def export(
+def export(  # type: ignore
     func: Union[
-        Callable[[Any, TS, Union[Bot, None]], Awaitable[TMS]],
-        Callable[[Any, TS, Union[Bot, None]], Awaitable[list[TMS]]],
-        Callable[[Any, TS, Union[Bot, None]], Awaitable[Union[TMS, list[TMS]]]],
+        Callable[[Any, Segment, Union[Bot, None]], Awaitable[TMS]],
+        Callable[[Any, Segment, Union[Bot, None]], Awaitable[list[TMS]]],
+        Callable[[Any, Segment, Union[Bot, None]], Awaitable[Union[TMS, list[TMS]]]],
     ],
 ):
     sig = inspect.signature(func)

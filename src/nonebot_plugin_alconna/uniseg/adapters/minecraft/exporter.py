@@ -2,9 +2,9 @@ from typing import Union
 
 from nonebot.adapters import Bot, Event
 from nonebot.adapters.minecraft.bot import Bot as MinecraftBot
-from nonebot.adapters.minecraft.event.base import MessageEvent
+from nonebot.adapters.minecraft.event import MessageEvent
 from nonebot.adapters.minecraft.message import Message, MessageSegment
-from nonebot.adapters.minecraft.model import BaseComponent, ClickAction, ClickEvent, HoverAction, HoverEvent, TextColor
+from nonebot.adapters.minecraft.models import Component, ClickAction, ClickEvent, HoverAction, HoverEvent, Color
 from tarina import lang
 
 from nonebot_plugin_alconna.uniseg.constraint import SupportScope
@@ -45,7 +45,7 @@ STYLE_TYPE_MAP = {
     "white": "white",
 }
 
-for color in TextColor.__members__.values():
+for color in Color.__members__.values():
     STYLE_TYPE_MAP[color.value] = color  # type: ignore
 
 
@@ -123,19 +123,19 @@ class MinecraftMessageExporter(MessageExporter[Message]):
                     kwargs["color"] = style
         if seg.clicked_label:
             kwargs["hover_event"] = HoverEvent(
-                action=HoverAction.SHOW_TEXT, text=[BaseComponent(text=seg.clicked_label)]
+                action=HoverAction.show_text, contents=[Component(text=seg.clicked_label)]
             )
-        if seg.flag == "link":
+        if seg.flag == "link" and seg.url:
             return MessageSegment.text(
-                label.text, **kwargs, click_event=ClickEvent(action=ClickAction.OPEN_URL, value=seg.url)
+                label.text, **kwargs, click_event=ClickEvent(action=ClickAction.open_url, value=seg.url)
             )
-        if seg.flag == "input":
+        if seg.flag == "input" and seg.text:
             return MessageSegment.text(
-                label.text, **kwargs, click_event=ClickEvent(action=ClickAction.SUGGEST_COMMAND, value=seg.text)
+                label.text, **kwargs, click_event=ClickEvent(action=ClickAction.suggest_command, value=seg.text)
             )
-        if seg.flag == "enter":
+        if seg.flag == "enter" and seg.text:
             return MessageSegment.text(
-                label.text, **kwargs, click_event=ClickEvent(action=ClickAction.RUN_COMMAND, value=seg.text)
+                label.text, **kwargs, click_event=ClickEvent(action=ClickAction.run_command, value=seg.text)
             )
         raise SerializeFailed(lang.require("nbp-uniseg", "invalid_segment").format(type="button", seg=seg))
 
