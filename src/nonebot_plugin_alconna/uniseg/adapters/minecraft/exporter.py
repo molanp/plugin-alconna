@@ -4,7 +4,7 @@ from nonebot.adapters import Bot, Event
 from nonebot.adapters.minecraft.bot import Bot as MinecraftBot
 from nonebot.adapters.minecraft.event import MessageEvent
 from nonebot.adapters.minecraft.message import Message, MessageSegment
-from nonebot.adapters.minecraft.models import Component, ClickAction, ClickEvent, HoverAction, HoverEvent, Color
+from nonebot.adapters.minecraft.models import ClickAction, ClickEvent, Color, Component, HoverAction, HoverEvent
 from tarina import lang
 
 from nonebot_plugin_alconna.uniseg.constraint import SupportScope

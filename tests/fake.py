@@ -218,8 +218,8 @@ def fake_message_event_guild(**field) -> "MessageCreateEvent":
 
 
 def fake_satori_bot_params(self_id: str = "test", platform: str = "test") -> dict:
-    from nonebot.adapters.satori.models import Login, LoginStatus, User
     from nonebot.adapters.satori.config import ClientInfo
+    from nonebot.adapters.satori.models import Login, LoginStatus, User
 
     return {
         "self_id": self_id,
