@@ -58,15 +58,28 @@ class YunHuMessageBuilder(MessageBuilder):
 
     @build("image")
     def image(self, seg: ImageSegment):
-        return Image(id=seg.data["imageKey"], url=seg.data["url"], raw=seg.data["raw"])
+
+        if seg.data["url"]:
+            return Image(id=seg.data["imageKey"], url=seg.data["url"])
+        if seg.data["raw"]:
+            return Image(id=seg.data["imageKey"], raw=seg.data["raw"])
+        return Image(id=seg.data["imageKey"])
 
     @build("video")
     def video(self, seg: VideoSegment):
-        return Video(id=seg.data["videoKey"], url=seg.data["url"], raw=seg.data["raw"])
+        if seg.data["url"]:
+            return Video(id=seg.data["videoKey"], url=seg.data["url"])
+        if seg.data["raw"]:
+            return Video(id=seg.data["videoKey"], raw=seg.data["raw"])
+        return Video(id=seg.data["videoKey"])
 
     @build("file")
     def file(self, seg: FileSegment):
-        return File(id=seg.data["fileKey"], url=seg.data["url"], raw=seg.data["raw"])
+        if seg.data["url"]:
+            return File(id=seg.data["fileKey"], url=seg.data["url"])
+        if seg.data["raw"]:
+            return File(id=seg.data["fileKey"], raw=seg.data["raw"])
+        return File(id=seg.data["fileKey"])
 
     @build("keyboard")
     def keyboard(self, seg: ButtonsSegment):

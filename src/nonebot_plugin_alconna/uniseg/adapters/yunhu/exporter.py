@@ -40,7 +40,7 @@ class YunHuMessageExporter(MessageExporter[Message]):
         if isinstance(event, MessageEvent):
             return Target(
                 event.event.sender.senderId,
-                event.event.chat.chatId,
+                event.event.chat.chatId if event.event.chat.chatType == "group" else "",
                 private=(event.event.chat.chatType == "bot"),
                 source=event.event.message.msgId,
                 adapter=self.get_adapter(),
@@ -137,12 +137,17 @@ class YunHuMessageExporter(MessageExporter[Message]):
         assert isinstance(bot, YunHuBot)
         if TYPE_CHECKING:
             assert isinstance(message, self.get_message_type())
+
         kb = None
+        message_id: str | None = None
+
+        # 处理 button
         if buttons := message.get("$yunhu:button"):
             message = message.exclude("$yunhu:button")
             buts = [but.data["button"] for but in buttons]
-            rows = [buts[i : i + 9] for i in range(0, len(buttons), 9)]
-            kb = rows
+            kb = [buts[i : i + 9] for i in range(0, len(buts), 9)]
+
+        # 处理 button_row
         if rows := message.get("$yunhu:button_row"):
             message = message.exclude("$yunhu:button_row")
             but_rows = [row.data["buttons"] for row in rows]
@@ -150,18 +155,31 @@ class YunHuMessageExporter(MessageExporter[Message]):
                 kb = but_rows
             else:
                 kb.extend(but_rows)
+
+        # 处理 keyboard
         if keyboard := message.get("$yunhu:keyboard"):
             message = message.exclude("$yunhu:keyboard")
+            keyboard_buttons = keyboard[0].data["buttons"]
             if not kb:
-                kb = keyboard[0].data["buttons"]
+                kb = keyboard_buttons
             else:
-                kb.extend(keyboard[0].data["buttons"])
+                kb.extend(keyboard_buttons)
 
         if kb:
             message.append(MessageSegment.buttons(kb))
 
+        # 处理 reply
+        if reply_segments := message.get("$yunhu:reply"):
+            message = message.exclude("$yunhu:reply")
+            raw_inner_id = reply_segments[0].data.get("message_id")
+            message_id = str(raw_inner_id) if raw_inner_id else None
+        else:
+            message_id = None
+
         if isinstance(target, YunHuEvent):
-            return await bot.send(event=target, message=message, **kwargs)
+            if message_id:
+                return await bot.send(event=target, message=message, reply_to=message_id)
+            return await bot.send(event=target, message=message)
 
         content, content_type = message.serialize()
         return await bot.send_msg(
@@ -169,7 +187,7 @@ class YunHuMessageExporter(MessageExporter[Message]):
             receive_id=target.id,
             content=content,
             content_type=content_type,
-            parent_id=target.parent_id,
+            parent_id=message_id,
         )
 
     async def recall(self, mid: Any, bot: Bot, context: Union[Target, Event]):
@@ -180,6 +198,7 @@ class YunHuMessageExporter(MessageExporter[Message]):
                 chat_type = "user"
             else:
                 chat_id = context.event.message.chatId
+                chat_type = "group"
             await bot.delete_msg(message_id=str(mid), chat_id=chat_id, chat_type=chat_type)
         else:
             _mid: SendMsgResponse = cast(SendMsgResponse, mid)
