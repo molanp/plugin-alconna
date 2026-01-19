@@ -1,32 +1,22 @@
 from typing import TYPE_CHECKING
 
 from nonebot.adapters import Bot, Event
-from nonebot.adapters.yunhu.message import Video as VideoSegment
-from nonebot.adapters.yunhu.message import Text as TextSegment
-from nonebot.adapters.yunhu.message import Face as FaceSegment
-from nonebot.adapters.yunhu.message import Buttons as ButtonsSegment
-from nonebot.adapters.yunhu.message import Markdown as MarkdownSegment
-from nonebot.adapters.yunhu.message import At as AtSegment
-from nonebot.adapters.yunhu.message import Image as ImageSegment
-from nonebot.adapters.yunhu.message import Html as HtmlSegment
-from nonebot.adapters.yunhu.message import File as FileSegment
-from nonebot.adapters.yunhu.message import Message
 from nonebot.adapters.yunhu.event import MessageEvent
+from nonebot.adapters.yunhu.message import At as AtSegment
+from nonebot.adapters.yunhu.message import Buttons as ButtonsSegment
+from nonebot.adapters.yunhu.message import Face as FaceSegment
+from nonebot.adapters.yunhu.message import File as FileSegment
+from nonebot.adapters.yunhu.message import Html as HtmlSegment
+from nonebot.adapters.yunhu.message import Image as ImageSegment
+from nonebot.adapters.yunhu.message import Markdown as MarkdownSegment
+from nonebot.adapters.yunhu.message import Message
+from nonebot.adapters.yunhu.message import Text as TextSegment
+from nonebot.adapters.yunhu.message import Video as VideoSegment
 from nonebot.adapters.yunhu.models import Reply as ReplySegement
 
 from nonebot_plugin_alconna.uniseg.builder import MessageBuilder, build
 from nonebot_plugin_alconna.uniseg.constraint import SupportAdapter
-from nonebot_plugin_alconna.uniseg.segment import (
-    At,
-    Button,
-    Emoji,
-    File,
-    Image,
-    Keyboard,
-    Reply,
-    Text,
-    Video,
-)
+from nonebot_plugin_alconna.uniseg.segment import At, Button, Emoji, File, Image, Keyboard, Reply, Text, Video
 
 
 class YunHuMessageBuilder(MessageBuilder):

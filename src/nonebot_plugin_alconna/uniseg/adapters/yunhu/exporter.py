@@ -3,29 +3,15 @@ from typing import TYPE_CHECKING, Any, Union, cast
 
 from nonebot.adapters import Bot, Event
 from nonebot.adapters.yunhu.bot import Bot as YunHuBot
-from nonebot.adapters.yunhu.event import MessageEvent
-from nonebot.adapters.yunhu.event import NoticeEvent
 from nonebot.adapters.yunhu.event import Event as YunHuEvent
-from nonebot.adapters.yunhu.message import Message
-from nonebot.adapters.yunhu.message import MessageSegment
-from nonebot.adapters.yunhu.models import BaseNotice
-from nonebot.adapters.yunhu.models import ButtonBody
-from nonebot.adapters.yunhu.models import SendMsgResponse
+from nonebot.adapters.yunhu.event import MessageEvent, NoticeEvent
+from nonebot.adapters.yunhu.message import Message, MessageSegment
+from nonebot.adapters.yunhu.models import BaseNotice, ButtonBody, SendMsgResponse
 from tarina import lang
 
 from nonebot_plugin_alconna.uniseg.constraint import SupportScope
 from nonebot_plugin_alconna.uniseg.exporter import MessageExporter, SerializeFailed, SupportAdapter, Target, export
-from nonebot_plugin_alconna.uniseg.segment import (
-    At,
-    Button,
-    Emoji,
-    File,
-    Image,
-    Keyboard,
-    Reply,
-    Text,
-    Video,
-)
+from nonebot_plugin_alconna.uniseg.segment import At, Button, Emoji, File, Image, Keyboard, Reply, Text, Video
 
 
 class YunHuMessageExporter(MessageExporter[Message]):
