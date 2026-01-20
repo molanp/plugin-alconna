@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Union, cast
+from typing import TYPE_CHECKING, Any, Sequence, Union, cast
 
 from nonebot.adapters import Bot, Event
 from nonebot.adapters.yunhu.bot import Bot as YunHuBot
@@ -11,7 +11,7 @@ from tarina import lang
 
 from nonebot_plugin_alconna.uniseg.constraint import SupportScope
 from nonebot_plugin_alconna.uniseg.exporter import MessageExporter, SerializeFailed, SupportAdapter, Target, export
-from nonebot_plugin_alconna.uniseg.segment import At, Button, Emoji, File, Image, Keyboard, Reply, Text, Video
+from nonebot_plugin_alconna.uniseg.segment import At, Button, Emoji, File, Image, Keyboard, Reply, Text, Video, Segment
 
 
 class YunHuMessageExporter(MessageExporter[Message]):
@@ -193,6 +193,35 @@ class YunHuMessageExporter(MessageExporter[Message]):
                 message_id=_mid.data.messageInfo.msgId,
                 chat_id=_mid.data.messageInfo.recvId,
                 chat_type=_mid.data.messageInfo.recvType,
+            )
+
+    async def edit(self, new: Sequence[Segment], mid: Any, bot: Bot, context: Union[Target, Event]):
+        assert isinstance(bot, YunHuBot)
+        new_msg = await self.export(new, bot, True)
+        content, _type = new_msg.serialize()
+        if isinstance(mid, (str, int)) and isinstance(context, MessageEvent):
+            if context.event.message.chatType == "bot":
+                chat_id = context.event.sender.senderId
+                chat_type = "user"
+            else:
+                chat_id = context.event.message.chatId
+                chat_type = "group"
+            await bot.edit_msg(
+                message_id=str(mid),
+                recvId=chat_id,
+                recvType=chat_type,
+                content=content,  # pyright: ignore[reportArgumentType]
+                content_type=_type,  # pyright: ignore[reportArgumentType]
+            )
+        else:
+            _mid: SendMsgResponse = cast(SendMsgResponse, mid)
+            assert _mid.data
+            await bot.edit_msg(
+                message_id=_mid.data.messageInfo.msgId,
+                recvId=_mid.data.messageInfo.recvId,
+                recvType=_mid.data.messageInfo.recvType,
+                content=content,  # pyright: ignore[reportArgumentType]
+                content_type=_type,  # pyright: ignore[reportArgumentType]
             )
 
     def get_reply(self, mid: Any):
