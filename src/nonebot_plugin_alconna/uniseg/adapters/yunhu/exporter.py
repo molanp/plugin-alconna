@@ -11,7 +11,7 @@ from tarina import lang
 
 from nonebot_plugin_alconna.uniseg.constraint import SupportScope
 from nonebot_plugin_alconna.uniseg.exporter import MessageExporter, SerializeFailed, SupportAdapter, Target, export
-from nonebot_plugin_alconna.uniseg.segment import At, Button, Emoji, File, Image, Keyboard, Reply, Text, Video, Segment
+from nonebot_plugin_alconna.uniseg.segment import At, Button, Emoji, File, Image, Keyboard, Reply, Segment, Text, Video
 
 
 class YunHuMessageExporter(MessageExporter[Message]):
